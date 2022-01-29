@@ -1,0 +1,102 @@
+package com.commercialpilot.s3.util;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+public class EncryptDecryptUtil {
+
+
+	 public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+	   IllegalBlockSizeException, BadPaddingException, IOException {
+	  String key = "jackrutorial.com";
+	  
+	  System.out.println("File input: " + "D:\\2022\\myFile.txt");
+	  String myFile = "myFile.txt";
+
+	  //encryptedFile
+	  encryptedFile(key, "D:\\2022\\myFile.txt", "D:\\2022\\myFile.enc");
+	  
+	  //decryptedFile
+	 // decryptedFile(key, "D:\\2022\\myFile.enc", "D:\\2022\\myFile-decrypt.txt");
+	 }
+
+	 public static void encryptedFile(String secretKey, String fileInputPath, String fileOutPath)
+	   throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException,
+	   IllegalBlockSizeException, BadPaddingException {
+		 SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "AES");
+		 Cipher cipher = Cipher.getInstance("AES");
+		 int maxKeyLen = Cipher.getMaxAllowedKeyLength("AES");
+		 System.out.println("maxKeyLen: " + maxKeyLen);
+		 cipher.init(Cipher.ENCRYPT_MODE, key);
+
+	  File fileInput = new File(fileInputPath);
+	  FileInputStream inputStream = new FileInputStream(fileInput);
+	  byte[] inputBytes = new byte[(int) fileInput.length()];
+	  inputStream.read(inputBytes);
+
+	  byte[] outputBytes = cipher.doFinal(inputBytes);
+
+	  File fileEncryptOut = new File(fileOutPath);
+	  FileOutputStream outputStream = new FileOutputStream(fileEncryptOut);
+	  outputStream.write(outputBytes);
+
+	  inputStream.close();
+	  outputStream.close();
+	  
+	  System.out.println("File successfully encrypted!");
+	  System.out.println("New File: " + fileOutPath);
+	 }
+	 
+	 public static byte[] decryptedFile(String secretKey, String fileInputPath)
+			   throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException,
+			   IllegalBlockSizeException, BadPaddingException {
+		 SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "AES");
+		 Cipher cipher = Cipher.getInstance("AES");
+			  cipher.init(Cipher.DECRYPT_MODE, key);
+
+			  File fileInput = new File(fileInputPath);
+			  FileInputStream inputStream = new FileInputStream(fileInput);
+			  byte[] inputBytes = new byte[(int) fileInput.length()];
+			  inputStream.read(inputBytes);
+
+			  byte[] outputBytes = cipher.doFinal(inputBytes);			  
+			  inputStream.close();			  
+			  System.out.println("File successfully decrypted!");
+			  return outputBytes;
+			 }
+	 
+//	 public static void decryptedFile(String secretKey, String fileInputPath, String fileOutPath)
+//			   throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException,
+//			   IllegalBlockSizeException, BadPaddingException {
+//		 SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "AES");
+//		 Cipher cipher = Cipher.getInstance("AES");
+//			  cipher.init(Cipher.DECRYPT_MODE, key);
+//
+//			  File fileInput = new File(fileInputPath);
+//			  FileInputStream inputStream = new FileInputStream(fileInput);
+//			  byte[] inputBytes = new byte[(int) fileInput.length()];
+//			  inputStream.read(inputBytes);
+//
+//			  byte[] outputBytes = cipher.doFinal(inputBytes);
+//
+//			  File fileEncryptOut = new File(fileOutPath);
+//			  FileOutputStream outputStream = new FileOutputStream(fileEncryptOut);
+//			  outputStream.write(outputBytes);
+//
+//			  inputStream.close();
+//			  outputStream.close();
+//			  
+//			  System.out.println("File successfully decrypted!");
+//			  System.out.println("New File: " + fileOutPath);
+//			 }
+
+
+}
